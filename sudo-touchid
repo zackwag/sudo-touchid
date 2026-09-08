@@ -1,0 +1,90 @@
+#!/bin/bash
+set -euo pipefail
+
+SUDO_LOCAL="/etc/pam.d/sudo_local"
+PAM_TID="auth       sufficient     pam_tid.so"
+PAM_REATTACH="auth       optional       pam_reattach.so"
+
+usage() {
+  cat <<EOF
+Usage: sudo-touchid [--enable | --disable | --status] [--with-reattach]
+
+  --enable          Enable Touch ID for sudo (default)
+  --disable         Disable Touch ID for sudo
+  --status          Show current configuration
+  --with-reattach   Also add pam_reattach.so for tmux/screen support
+
+EOF
+  exit 1
+}
+
+check_macos() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: This tool only works on macOS." >&2
+    exit 1
+  fi
+
+  local version
+  version="$(sw_vers -productVersion | cut -d. -f1)"
+  if [[ "$version" -lt 14 ]]; then
+    echo "Error: macOS 14 (Sonoma) or later is required." >&2
+    exit 1
+  fi
+}
+
+enable() {
+  local with_reattach="$1"
+  local content="$PAM_TID"
+
+  if [[ "$with_reattach" == "true" ]]; then
+    if [[ ! -f /usr/local/lib/pam/pam_reattach.so ]] && [[ ! -f /opt/homebrew/lib/pam/pam_reattach.so ]]; then
+      echo "Warning: pam_reattach.so not found. Install it with: brew install pam-reattach" >&2
+    fi
+    content="$PAM_REATTACH
+$PAM_TID"
+  fi
+
+  echo "$content" | sudo tee "$SUDO_LOCAL" > /dev/null
+  sudo chmod 444 "$SUDO_LOCAL"
+  echo "Touch ID for sudo enabled."
+}
+
+disable() {
+  if [[ -f "$SUDO_LOCAL" ]]; then
+    sudo rm "$SUDO_LOCAL"
+    echo "Touch ID for sudo disabled."
+  else
+    echo "Touch ID for sudo is not enabled."
+  fi
+}
+
+status() {
+  if [[ -f "$SUDO_LOCAL" ]] && grep -q pam_tid "$SUDO_LOCAL"; then
+    echo "Touch ID for sudo is enabled."
+    cat "$SUDO_LOCAL"
+  else
+    echo "Touch ID for sudo is not enabled."
+  fi
+}
+
+check_macos
+
+action="enable"
+with_reattach="false"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --enable)       action="enable"; shift ;;
+    --disable)      action="disable"; shift ;;
+    --status)       action="status"; shift ;;
+    --with-reattach) with_reattach="true"; shift ;;
+    -h|--help)      usage ;;
+    *)              echo "Unknown option: $1" >&2; usage ;;
+  esac
+done
+
+case "$action" in
+  enable)  enable "$with_reattach" ;;
+  disable) disable ;;
+  status)  status ;;
+esac
