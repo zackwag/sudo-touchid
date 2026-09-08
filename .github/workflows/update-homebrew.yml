@@ -1,0 +1,38 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release info
+        id: release
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          URL="https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/sudo-touchid"
+          SHA256=$(curl -sL "$URL" | sha256sum | cut -d' ' -f1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout homebrew-tap
+        uses: actions/checkout@v4
+        with:
+          repository: zackwag/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+      - name: Update formula
+        run: |
+          sed -i 's/version ".*"/version "${{ steps.release.outputs.version }}"/' Formula/sudo-touchid.rb
+          sed -i 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Formula/sudo-touchid.rb
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          commit-message: "Update sudo-touchid to ${{ steps.release.outputs.version }}"
+          title: "Update sudo-touchid to ${{ steps.release.outputs.version }}"
+          body: "Automated update from [sudo-touchid ${{ github.ref_name }}](${{ github.event.release.html_url }})"
+          branch: update-sudo-touchid-${{ steps.release.outputs.version }}

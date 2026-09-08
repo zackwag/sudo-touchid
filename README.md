@@ -36,6 +36,10 @@ brew install pam-reattach
 sudo sudo-touchid --with-reattach
 ```
 
+## Credit
+
+Inspired by [artginzburg/sudo-touchid](https://github.com/artginzburg/sudo-touchid).
+
 ## License
 
 MIT
