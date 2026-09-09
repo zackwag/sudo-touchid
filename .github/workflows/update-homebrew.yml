@@ -29,7 +29,7 @@ jobs:
           sed -i 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Formula/sudo-touchid.rb
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           commit-message: "Update sudo-touchid to ${{ steps.release.outputs.version }}"
