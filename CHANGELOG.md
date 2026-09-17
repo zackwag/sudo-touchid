@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/zackwag/sudo-touchid/compare/v1.1.0...v1.1.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* **ci:** use RELEASE_PLEASE_TOKEN and attach the script to each release ([#7](https://github.com/zackwag/sudo-touchid/issues/7)) ([5a5500f](https://github.com/zackwag/sudo-touchid/commit/5a5500fb15b32c1cc865b36f9ffad90f4267e132))
+
 ## [1.1.0](https://github.com/zackwag/sudo-touchid/compare/v1.0.0...v1.1.0) (2026-09-17)
 
 
