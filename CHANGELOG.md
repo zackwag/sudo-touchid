@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/zackwag/sudo-touchid/compare/v1.1.1...v1.1.2) (2026-09-17)
+
+
+### Bug Fixes
+
+* **ci:** wait for checks to actually register before polling for completion ([#10](https://github.com/zackwag/sudo-touchid/issues/10)) ([2cfb9b1](https://github.com/zackwag/sudo-touchid/commit/2cfb9b199e7f70181c1771ecb968726d34611d27))
+
 ## [1.1.1](https://github.com/zackwag/sudo-touchid/compare/v1.1.0...v1.1.1) (2026-09-17)
 
 
