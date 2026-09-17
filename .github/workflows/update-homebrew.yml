@@ -32,7 +32,7 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          commit-message: "Update sudo-touchid to ${{ steps.release.outputs.version }}"
-          title: "Update sudo-touchid to ${{ steps.release.outputs.version }}"
+          commit-message: "chore(sudo-touchid): update to ${{ steps.release.outputs.version }}"
+          title: "chore(sudo-touchid): update to ${{ steps.release.outputs.version }}"
           body: "Automated update from [sudo-touchid ${{ github.ref_name }}](${{ github.event.release.html_url }})"
           branch: update-sudo-touchid-${{ steps.release.outputs.version }}
