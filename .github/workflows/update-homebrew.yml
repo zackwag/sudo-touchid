@@ -28,11 +28,36 @@ jobs:
           sed -i 's/version ".*"/version "${{ steps.release.outputs.version }}"/' Formula/sudo-touchid.rb
           sed -i 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Formula/sudo-touchid.rb
 
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          commit-message: "chore(sudo-touchid): update to ${{ steps.release.outputs.version }}"
-          title: "chore(sudo-touchid): update to ${{ steps.release.outputs.version }}"
-          body: "Automated update from [sudo-touchid ${{ github.ref_name }}](${{ github.event.release.html_url }})"
-          branch: update-sudo-touchid-${{ steps.release.outputs.version }}
+      - name: Open PR against homebrew-tap
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/sudo-touchid.rb
+          git diff --cached --quiet && exit 0
+
+          VERSION="${{ steps.release.outputs.version }}"
+          BRANCH="update-sudo-touchid-${VERSION}"
+          git checkout -b "$BRANCH"
+          git commit -m "chore(sudo-touchid): update to ${VERSION}"
+          git push origin "$BRANCH"
+
+          gh pr create --repo zackwag/homebrew-tap --base main --head "$BRANCH" \
+            --title "chore(sudo-touchid): update to ${VERSION}" \
+            --body "Automated update from [sudo-touchid ${{ github.ref_name }}](${{ github.event.release.html_url }})."
+
+          pr_number=$(gh pr list --repo zackwag/homebrew-tap --head "$BRANCH" --json number -q '.[0].number')
+          for i in $(seq 1 40); do
+            pending=$(gh pr view "$pr_number" --repo zackwag/homebrew-tap --json statusCheckRollup -q '[.statusCheckRollup[] | select(.status!="COMPLETED")] | length')
+            if [ "$pending" = "0" ]; then break; fi
+            sleep 15
+          done
+
+          bad=$(gh pr view "$pr_number" --repo zackwag/homebrew-tap --json statusCheckRollup -q '[.statusCheckRollup[] | select((.conclusion // "") | IN("SUCCESS","NEUTRAL","SKIPPED") | not)] | length')
+          if [ "$bad" != "0" ]; then
+            echo "::error::$bad check(s) did not succeed; leaving PR #$pr_number open for review."
+            exit 1
+          fi
+
+          gh pr merge "$pr_number" --repo zackwag/homebrew-tap --squash --delete-branch
