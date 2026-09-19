@@ -25,8 +25,18 @@ jobs:
 
       - name: Update formula
         run: |
-          sed -i 's/version ".*"/version "${{ steps.release.outputs.version }}"/' Formula/sudo-touchid.rb
-          sed -i 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Formula/sudo-touchid.rb
+          # The formula has no separate `version` field (brew style flags it as
+          # redundant when it's inferable from the url), so the version lives only
+          # in the url's tag segment - rewrite that directly rather than a
+          # `version "..."` line, which doesn't exist and would silently no-op.
+          VERSION="${{ steps.release.outputs.version }}"
+          sed -i -E "s#(releases/download/v)[0-9]+\.[0-9]+\.[0-9]+(/sudo-touchid)#\1${VERSION}\2#" Formula/sudo-touchid.rb
+          sed -i "s/sha256 \".*\"/sha256 \"${{ steps.release.outputs.sha256 }}\"/" Formula/sudo-touchid.rb
+
+          grep -q "v${VERSION}/sudo-touchid" Formula/sudo-touchid.rb || {
+            echo "::error::url in Formula/sudo-touchid.rb was not updated to v${VERSION}"
+            exit 1
+          }
 
       - name: Open PR against homebrew-tap
         env:
