@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/zackwag/sudo-touchid/compare/v1.1.2...v1.1.3) (2026-09-19)
+
+
+### Bug Fixes
+
+* **ci:** rewrite the url version directly, not a nonexistent version field ([#13](https://github.com/zackwag/sudo-touchid/issues/13)) ([4e0aef9](https://github.com/zackwag/sudo-touchid/commit/4e0aef933fed69ddddf961a136837b81b8e9f9a9))
+
 ## [1.1.2](https://github.com/zackwag/sudo-touchid/compare/v1.1.1...v1.1.2) (2026-09-17)
 
 
