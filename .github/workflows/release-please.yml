@@ -24,7 +24,7 @@ jobs:
 
       - name: Check out repository
         if: steps.release.outputs.release_created == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Attach the sudo-touchid script to the release
         if: steps.release.outputs.release_created == 'true'
