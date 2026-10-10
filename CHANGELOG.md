@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.4](https://github.com/zackwag/sudo-touchid/compare/v1.1.3...v1.1.4) (2026-10-10)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump actions/checkout from 4 to 7 ([#17](https://github.com/zackwag/sudo-touchid/issues/17)) ([92d1d85](https://github.com/zackwag/sudo-touchid/commit/92d1d85131b23fbc4975a32b0cff352bd55ed31a))
+* **deps:** bump amannn/action-semantic-pull-request from 5 to 6 ([#16](https://github.com/zackwag/sudo-touchid/issues/16)) ([f5ce1c3](https://github.com/zackwag/sudo-touchid/commit/f5ce1c3b165e0abb3b28288d740df2eb72a547fd))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#15](https://github.com/zackwag/sudo-touchid/issues/15)) ([dfc9d20](https://github.com/zackwag/sudo-touchid/commit/dfc9d2069fa7e8c62964252bf7af360cf7b71613))
+
 ## [1.1.3](https://github.com/zackwag/sudo-touchid/compare/v1.1.2...v1.1.3) (2026-09-19)
 
 
