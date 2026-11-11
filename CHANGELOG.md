@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/zackwag/sudo-touchid/compare/v1.1.4...v1.1.5) (2026-11-11)
+
+
+### Miscellaneous Chores
+
+* fix dependabot commit-message prefixes for conventional commits ([#20](https://github.com/zackwag/sudo-touchid/issues/20)) ([ea6cdf6](https://github.com/zackwag/sudo-touchid/commit/ea6cdf664303b146d56cd072c2faa2a3291d8826))
+
 ## [1.1.4](https://github.com/zackwag/sudo-touchid/compare/v1.1.3...v1.1.4) (2026-10-10)
 
 
